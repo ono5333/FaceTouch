@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>顔クリック1分ゲーム - LIFF</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ゲーム画面 -->
+      <div id="game-container">
+        <!-- ヘッダー -->
+        <header class="game-header">
+          <h1>🎮 顔クリック1分ゲーム</h1>
+          <div class="game-info">
+            <div class="score-display">
+              <span>スコア: </span>
+              <span id="score">0</span>
+            </div>
+            <div class="timer-display">
+              <span>残り時間: </span>
+              <span id="timer">60</span>
+              <span>秒</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- ゲームエリア -->
+        <main class="game-area">
+          <canvas id="game-canvas" width="800" height="600"></canvas>
+          
+          <!-- ゲーム制御ボタン -->
+          <div class="game-controls">
+            <button id="start-btn" class="btn btn-primary">ゲーム開始</button>
+            <button id="end-btn" class="btn btn-secondary" style="display: none;">ゲーム終了</button>
+          </div>
+
+          <!-- 結果画面 -->
+          <div id="result-screen" class="result-screen" style="display: none;">
+            <h2>🎉 ゲーム終了!</h2>
+            <div class="final-score">
+              <p>最終スコア: <span id="final-score">0</span>点</p>
+            </div>
+            <div class="result-controls">
+              <button id="replay-btn" class="btn btn-primary">再プレイ</button>
+              <button id="quit-btn" class="btn btn-secondary">ゲーム終了</button>
+            </div>
+            <div class="share-controls">
+              <button id="share-btn" class="btn btn-success">結果をシェア</button>
+            </div>
+          </div>
+        </main>
+
+        <!-- 説明セクション -->
+        <footer class="game-instructions">
+          <details>
+            <summary>ゲームの遊び方</summary>
+            <div class="instructions-content">
+              <h3>顔の種類と得点:</h3>
+              <ul>
+                <li>😊 笑った顔: +10点 (2秒表示)</li>
+                <li>😐 普通の顔: +5点 (2秒表示)</li>
+                <li>😢 悲しい顔: +2点 (2秒表示)</li>
+                <li>😠 怒った顔: -10点 (2秒表示)</li>
+                <li>😈 悪魔の顔: 得点半分 (5秒表示)</li>
+                <li>😇 天使の顔: 得点2倍 (1秒表示)</li>
+              </ul>
+              <p>※ 悪魔と天使の顔は30秒後と50秒後に1回ずつ登場</p>
+              <p>※ 顔は動き回るので素早くクリック!</p>
+            </div>
+          </details>
+        </footer>
+      </div>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

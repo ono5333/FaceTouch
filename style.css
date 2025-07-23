@@ -1,0 +1,311 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Game Container */
+#game-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Header Styles */
+.game-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.game-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 15px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.score-display, .timer-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #495057;
+}
+
+.score-display span:last-child {
+  color: #28a745;
+  font-size: 1.8rem;
+}
+
+.timer-display span:nth-child(2) {
+  color: #dc3545;
+  font-size: 1.8rem;
+}
+
+/* Game Area */
+.game-area {
+  text-align: center;
+  position: relative;
+}
+
+#game-canvas {
+  background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  border: 3px solid #dee2e6;
+  border-radius: 15px;
+  cursor: crosshair;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Game Controls */
+.game-controls {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(45deg, #6c757d, #495057);
+  color: white;
+}
+
+.btn-success {
+  background: linear-gradient(45deg, #28a745, #1e7e34);
+  color: white;
+}
+
+/* Result Screen */
+.result-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.result-screen h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.final-score {
+  font-size: 1.5rem;
+  margin: 1.5rem 0;
+  color: #495057;
+}
+
+.final-score span {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.result-controls, .share-controls {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Instructions */
+.game-instructions {
+  margin-top: 2rem;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 15px;
+}
+
+.game-instructions summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #495057;
+  padding: 0.5rem;
+}
+
+.instructions-content {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.instructions-content h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.instructions-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.instructions-content li {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  color: #495057;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.instructions-content li:last-child {
+  border-bottom: none;
+}
+
+.instructions-content p {
+  margin: 1rem 0;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #game-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .game-header h1 {
+    font-size: 2rem;
+  }
+  
+  .game-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  #game-canvas {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+  }
+  
+  .game-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn {
+    width: 200px;
+  }
+  
+  .result-controls, .share-controls {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .game-info {
+    font-size: 1.2rem;
+  }
+  
+  .score-display span:last-child,
+  .timer-display span:nth-child(2) {
+    font-size: 1.5rem;
+  }
+}
+
+/* Game Animation Effects */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+.bounce {
+  animation: bounce 1s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease;
+}
