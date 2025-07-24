@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゲーム - [会社名]</title>
+    <style>
+        .games-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .games-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .games-header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .games-header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        .game-card {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+        }
+        
+        .game-card h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .game-card p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .play-button {
+            display: inline-block;
+            background: white;
+            color: #ff6b6b;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+        
+        .features {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .games-header h1 {
+                font-size: 2em;
+            }
+            
+            .game-card {
+                padding: 20px;
+            }
+            
+            .game-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="games-section">
+        <header class="games-header">
+            <h1>🎮 [会社名] オリジナルゲーム</h1>
+            <p>楽しく遊べるWebゲームをお楽しみください</p>
+        </header>
+        
+        <div class="game-card">
+            <div class="game-icon">😊</div>
+            <h2>おかおぺちぺち</h2>
+            <p>1分間で顔をクリックして高得点を目指すゲーム！<br>
+               6種類の顔でそれぞれ違うポイント、ラッシュモードで超高速バトル！</p>
+            
+            <a href="/games/okaopetipeti/" class="play-button">
+                🎮 今すぐプレイ
+            </a>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">⏰</div>
+                    <h3>1分間勝負</h3>
+                    <p>短時間で楽しめる</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>PWA対応</h3>
+                    <p>アプリのように使える</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏃‍♂️</div>
+                    <h3>ラッシュモード</h3>
+                    <p>最後10秒の超高速</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏆</div>
+                    <h3>ハイスコア</h3>
+                    <p>友達と競い合おう</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

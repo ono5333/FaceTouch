@@ -1,23 +1,43 @@
 import './style.css'
 
+// PWA環境判定
+const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+             window.navigator.standalone || 
+             document.referrer.includes('android-app://');
+
+const isLIFFContext = () => {
+  return typeof liff !== 'undefined' && window.location.href.includes('line');
+};
+
 // LIFF初期化
 document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    await liff.init({
-      liffId: process.env.LIFF_ID || '1234567890-abcdefgh' // 本番では実際のLIFF IDを設定
-    });
-    
-    if (liff.isLoggedIn()) {
-      console.log('LIFF ログイン済み');
+  console.log('環境判定:', { isPWA, isLIFFContext: isLIFFContext() });
+  
+  if (isLIFFContext()) {
+    // LIFF環境での初期化
+    try {
+      await liff.init({
+        liffId: process.env.LIFF_ID || '1234567890-abcdefgh'
+      });
+      
+      if (liff.isLoggedIn()) {
+        console.log('LIFF ログイン済み');
+        initGame();
+      } else {
+        liff.login();
+      }
+    } catch (error) {
+      console.error('LIFF初期化エラー:', error);
       initGame();
-    } else {
-      liff.login();
     }
-  } catch (error) {
-    console.error('LIFF初期化エラー:', error);
-    // LIFFが使用できない場合でもゲームは動作させる
+  } else {
+    // PWA/Web環境での初期化
+    console.log('PWA/Web環境で起動');
     initGame();
   }
+  
+  // PWA インストールプロンプト処理
+  setupPWAInstall();
 });
 
 // ゲーム設定
@@ -533,23 +553,110 @@ function resetGame() {
 }
 
 async function shareResult() {
-  const message = `🎮 おかおぺちぺち 🎮\n\n📊 最終スコア: ${gameState.score}点\n\n一緒にプレイしませんか？`;
+  const message = `🎮 おかおぺちぺち 🎮\n\n📊 最終スコア: ${gameState.score}点\n\n一緒にプレイしませんか？\n\n#おかおぺちぺち #１分ゲーム #Stableソフト`;
   
   try {
-    if (liff.isLoggedIn()) {
+    // LIFF環境での共有
+    if (isLIFFContext() && typeof liff !== 'undefined' && liff.isLoggedIn()) {
       await liff.shareTargetPicker([{
         type: 'text',
         text: message
       }]);
-      console.log('結果をシェアしました');
-    } else {
-      // LIFFが使用できない場合はクリップボードにコピー
-      await navigator.clipboard.writeText(message);
-      alert('結果をクリップボードにコピーしました！');
+      console.log('LIFF経由でシェアしました');
+      return;
     }
+    
+    // Web Share API (PWA/モバイルブラウザ)
+    if (navigator.share) {
+      await navigator.share({
+        title: 'おかおぺちぺち - ゲーム結果',
+        text: message,
+        url: window.location.href
+      });
+      console.log('Web Share APIでシェアしました');
+      return;
+    }
+    
+    // クリップボード API フォールバック
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(message);
+      alert('結果をクリップボードにコピーしました！\nSNSに貼り付けてシェアしてください。');
+      return;
+    }
+    
+    // 最終フォールバック
+    const textArea = document.createElement('textarea');
+    textArea.value = message;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('結果をコピーしました！\nSNSに貼り付けてシェアしてください。');
+    
   } catch (error) {
     console.error('シェアエラー:', error);
-    // フォールバック: アラートで表示
-    alert(`結果: ${gameState.score}点\n\nスクリーンショットを撮ってシェアしてください！`);
+    // 最終フォールバック: アラートで表示
+    alert(`🎮 ゲーム結果 🎮\n\nスコア: ${gameState.score}点\n\nスクリーンショットを撮ってシェアしてください！\n\n#おかおぺちぺち #１分ゲーム #Stableソフト`);
   }
+}
+
+// PWAインストール処理
+function setupPWAInstall() {
+  let deferredPrompt;
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('PWAインストールプロンプト準備完了');
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+  });
+  
+  function showInstallButton() {
+    // インストールボタンを動的に作成
+    if (document.getElementById('install-btn')) return; // 既に存在する場合はスキップ
+    
+    const installBtn = document.createElement('button');
+    installBtn.id = 'install-btn';
+    installBtn.textContent = '📱 アプリとしてインストール';
+    installBtn.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 25px;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    `;
+    
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('PWAインストール結果:', outcome);
+        deferredPrompt = null;
+        installBtn.remove();
+      }
+    });
+    
+    document.body.appendChild(installBtn);
+    
+    // 5秒後に自動で非表示
+    setTimeout(() => {
+      if (installBtn.parentNode) {
+        installBtn.style.opacity = '0.7';
+      }
+    }, 5000);
+  }
+  
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA インストール完了');
+    const installBtn = document.getElementById('install-btn');
+    if (installBtn) installBtn.remove();
+  });
 }
