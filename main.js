@@ -9,9 +9,15 @@ const isLIFFContext = () => {
   return typeof liff !== 'undefined' && window.location.href.includes('line');
 };
 
+// デバッグモード設定
+const DEBUG_MODE = process.env.NODE_ENV === 'development';
+const debugLog = (...args) => {
+  if (DEBUG_MODE) console.log(...args);
+};
+
 // LIFF初期化
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('環境判定:', { isPWA, isLIFFContext: isLIFFContext() });
+  debugLog('環境判定:', { isPWA, isLIFFContext: isLIFFContext() });
   
   if (isLIFFContext()) {
     // LIFF環境での初期化
@@ -21,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       
       if (liff.isLoggedIn()) {
-        console.log('LIFF ログイン済み');
+        debugLog('LIFF ログイン済み');
         initGame();
       } else {
         liff.login();
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } else {
     // PWA/Web環境での初期化
-    console.log('PWA/Web環境で起動');
+    debugLog('PWA/Web環境で起動');
     initGame();
   }
   
@@ -47,7 +53,7 @@ const GAME_CONFIG = {
   CANVAS_HEIGHT: 600,
   MAX_FACES: 100, // ラッシュモード用に最大100個に変更
   INITIAL_FACES: 10,
-  FACE_SIZE: 60,
+  FACE_SIZE: 80, // iPhoneタップ用に60px→80pxに拡大
   MOVE_SPEED: 600, // ピクセル/秒 (6倍に増加)
   
   // ラッシュモード設定
@@ -187,7 +193,7 @@ function initGame() {
   // イベントリスナー設定
   setupEventListeners();
   
-  console.log('ゲーム初期化完了');
+  debugLog('ゲーム初期化完了');
 }
 
 function resizeCanvas() {
@@ -251,19 +257,36 @@ function handleCanvasClick(event) {
 }
 
 function showClickEffect(x, y, points) {
+  const rect = gameState.canvas.getBoundingClientRect();
+  
+  // Canvas座標を実際の画面座標に変換
+  const scaleX = rect.width / GAME_CONFIG.CANVAS_WIDTH;
+  const scaleY = rect.height / GAME_CONFIG.CANVAS_HEIGHT;
+  const screenX = x * scaleX + rect.left;
+  const screenY = y * scaleY + rect.top;
+  
   const effect = document.createElement('div');
-  effect.style.position = 'absolute';
-  effect.style.left = `${x}px`;
-  effect.style.top = `${y}px`;
+  effect.style.position = 'fixed'; // absoluteからfixedに変更
+  effect.style.left = `${screenX}px`;
+  effect.style.top = `${screenY}px`;
   effect.style.color = points > 0 ? '#00ff00' : '#ff0000';
-  effect.style.fontSize = '24px';
+  effect.style.fontSize = '28px'; // 24px→28pxに拡大（モバイル用）
   effect.style.fontWeight = 'bold';
   effect.style.pointerEvents = 'none';
   effect.style.zIndex = '1000';
+  effect.style.transform = 'translate(-50%, -50%)'; // 中央揃え
   effect.textContent = points > 0 ? `+${points}` : `${points}`;
   effect.classList.add('bounce');
   
-  gameState.canvas.parentElement.appendChild(effect);
+  // 画面外チェック
+  const maxX = window.innerWidth - 60;
+  const maxY = window.innerHeight - 40;
+  if (screenX > maxX) effect.style.left = `${maxX}px`;
+  if (screenY > maxY) effect.style.top = `${maxY}px`;
+  if (screenX < 60) effect.style.left = '60px';
+  if (screenY < 40) effect.style.top = '40px';
+  
+  document.body.appendChild(effect); // parentElementからbodyに変更
   
   setTimeout(() => {
     effect.remove();
@@ -284,9 +307,9 @@ function updateScore(points) {
 }
 
 function startGame() {
-  console.log('startGame開始');
+  debugLog('startGame開始');
   resetGame();
-  console.log('resetGame完了');
+  debugLog('resetGame完了');
   
   gameState.isPlaying = true;
   gameState.timeLeft = GAME_CONFIG.DURATION;
@@ -513,9 +536,23 @@ function endGame() {
 }
 
 function showResultScreen() {
+  const resultScreen = document.getElementById('result-screen');
   document.getElementById('final-score').textContent = gameState.score;
-  document.getElementById('result-screen').style.display = 'block';
-  document.getElementById('result-screen').classList.add('fade-in-up');
+  
+  // 一度クラスを削除してからリセット
+  resultScreen.classList.remove('fade-in-up');
+  resultScreen.style.display = 'block';
+  
+  // 強制的に中央配置をリセット
+  resultScreen.style.position = 'absolute';
+  resultScreen.style.top = '50%';
+  resultScreen.style.left = '50%';
+  resultScreen.style.transform = 'translate(-50%, -50%)';
+  
+  // アニメーションを少し遅延させて適用
+  setTimeout(() => {
+    resultScreen.classList.add('fade-in-up');
+  }, 10);
 }
 
 function hideResultScreen() {
@@ -553,21 +590,29 @@ function resetGame() {
 }
 
 async function shareResult() {
-  const message = `🎮 おかおぺちぺち 🎮\n\n📊 最終スコア: ${gameState.score}点\n\n一緒にプレイしませんか？\n\n#おかおぺちぺち #１分ゲーム #Stableソフト`;
+  const message = `🎮 おかおぺちぺち 🎮
+
+📊 最終スコア: ${gameState.score}点
+
+一緒にプレイしませんか？
+
+#おかおぺちぺち #１分ゲーム #Stableソフト
+
+`;
   
   try {
     // LIFF環境での共有
     if (isLIFFContext() && typeof liff !== 'undefined' && liff.isLoggedIn()) {
       await liff.shareTargetPicker([{
         type: 'text',
-        text: message
+        text: message + 'https://stablesoft0801.com/wp-content/uploads/games/okaopetipeti/'
       }]);
       console.log('LIFF経由でシェアしました');
       return;
     }
     
-    // Web Share API (PWA/モバイルブラウザ)
-    if (navigator.share) {
+    // モバイル環境でのみWeb Share APIを使用
+    if (navigator.share && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       await navigator.share({
         title: 'おかおぺちぺち - ゲーム結果',
         text: message,
@@ -577,16 +622,16 @@ async function shareResult() {
       return;
     }
     
-    // クリップボード API フォールバック
+    // クリップボード API (デスクトップ優先)
     if (navigator.clipboard) {
-      await navigator.clipboard.writeText(message);
-      alert('結果をクリップボードにコピーしました！\nSNSに貼り付けてシェアしてください。');
+      await navigator.clipboard.writeText(message + window.location.href);
+      alert('🎯 結果をクリップボードにコピーしました！\n\n📱 SNSに貼り付けてシェアしてください。\n\n✨ 友達と一緒にプレイしよう！');
       return;
     }
     
     // 最終フォールバック
     const textArea = document.createElement('textarea');
-    textArea.value = message;
+    textArea.value = message + window.location.href;
     document.body.appendChild(textArea);
     textArea.select();
     document.execCommand('copy');
@@ -596,7 +641,15 @@ async function shareResult() {
   } catch (error) {
     console.error('シェアエラー:', error);
     // 最終フォールバック: アラートで表示
-    alert(`🎮 ゲーム結果 🎮\n\nスコア: ${gameState.score}点\n\nスクリーンショットを撮ってシェアしてください！\n\n#おかおぺちぺち #１分ゲーム #Stableソフト`);
+    alert(`🎮 ゲーム結果 🎮
+
+スコア: ${gameState.score}点
+
+スクリーンショットを撮ってシェアしてください！
+
+#おかおぺちぺち #１分ゲーム #Stableソフト
+
+https://stablesoft0801.com/wp-content/uploads/games/okaopetipeti/`);
   }
 }
 

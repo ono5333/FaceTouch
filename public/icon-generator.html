@@ -33,17 +33,17 @@
             ctx.fillStyle = '#ff6b6b';
             ctx.fillRect(0, 0, size, size);
             
-            // 白い円の境界
+            // 白い円の背景
             ctx.fillStyle = 'white';
             ctx.beginPath();
-            ctx.arc(size/2, size/2, size/2 - 20, 0, Math.PI * 2);
+            ctx.arc(size/2, size/2 - 40, size/3, 0, Math.PI * 2);
             ctx.fill();
             
-            // メインの顔の絵文字
+            // メインの顔文字
             ctx.font = `${size * 0.4}px Arial`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('😊', size/2, size/2);
+            ctx.fillText('😊', size/2, size/2 - 40);
             
             // アプリ名
             ctx.fillStyle = '#333';

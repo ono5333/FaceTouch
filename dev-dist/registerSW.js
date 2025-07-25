@@ -1,1 +1,1 @@
-if('serviceWorker' in navigator) navigator.serviceWorker.register('/dev-sw.js?dev-sw', { scope: '/', type: 'classic' })
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/wp-content/uploads/games/okaopetipeti/dev-sw.js?dev-sw', { scope: '/wp-content/uploads/games/okaopetipeti/', type: 'classic' })

@@ -2,8 +2,8 @@
   "name": "おかおぺちぺち",
   "short_name": "おかおぺちぺち",
   "description": "1分間の顔クリックゲーム by Stableソフト",
-  "start_url": "/games/okaopetipeti/",
-  "scope": "/games/okaopetipeti/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ff6b6b",
   "theme_color": "#ff6b6b",
@@ -11,13 +11,13 @@
   "categories": ["games", "entertainment"],
   "icons": [
     {
-      "src": "/games/okaopetipeti/pwa-192x192.png",
+      "src": "./pwa-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/games/okaopetipeti/pwa-512x512.png",
+      "src": "./pwa-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
